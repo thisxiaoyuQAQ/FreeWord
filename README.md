@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FreeWord
 
-## Getting Started
+FreeWord 是一个现代化的语言学习应用，专注于帮助用户高效学习和记忆英语、日语等多种语言的词汇。
 
-First, run the development server:
+## ✨ 主要功能
+
+- **📚 词汇学习**: 支持英语和日语单词的学习，提供智能的记忆算法
+- **🔊 语音合成**: 内置文本转语音功能，支持多种语言的发音播放
+- **📥 单词导入**: 支持从文本文件导入单词，方便批量添加词汇
+- **📋 词汇管理**: 提供完整的词汇表管理，支持按语言、收藏状态过滤
+- **📊 学习进度**: 实时追踪学习进度，展示每日目标完成情况和总体学习统计
+- **⚙️ 个性化设置**: 支持调整学习语言、每日目标、语音速度等设置
+- **💾 本地存储**: 所有数据保存在本地，保护用户隐私
+
+## 🛠️ 技术栈
+
+- **前端框架**: Next.js 16
+- **编程语言**: TypeScript
+- **UI 设计**: 现代化 Apple 风格设计
+- **状态管理**: React Hooks
+- **本地存储**: localStorage API
+- **语音合成**: Web Speech API
+
+## 🚀 快速开始
+
+### 环境要求
+
+- Node.js 18+ 
+- npm 或 yarn 或 pnpm
+
+### 安装和运行
+
+1. 克隆项目
+
+```bash
+git clone <repository-url>
+cd freeword
+```
+
+2. 安装依赖
+
+```bash
+npm install
+# 或
+yarn install
+# 或
+pnpm install
+```
+
+3. 启动开发服务器
 
 ```bash
 npm run dev
-# or
+# 或
 yarn dev
-# or
+# 或
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. 打开浏览器访问
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 项目结构
 
-## Learn More
+```
+freeword/
+├── app/                   # Next.js 应用目录
+│   ├── components/        # 组件
+│   ├── api/               # API 路由
+│   ├── learning/          # 学习页面
+│   ├── import/            # 导入页面
+│   ├── vocabulary/        # 词汇表页面
+│   ├── progress/          # 进度页面
+│   ├── settings/          # 设置页面
+│   ├── globals.css        # 全局样式
+│   └── layout.tsx         # 应用布局
+├── types/                 # TypeScript 类型定义
+├── utils/                 # 工具函数
+├── public/                # 静态资源
+├── package.json           # 项目配置
+└── tsconfig.json          # TypeScript 配置
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 📖 使用说明
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 学习单词
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. 在学习页面，系统会随机展示一个单词
+2. 尝试记忆并输入对应的翻译
+3. 点击"检查"按钮查看结果
+4. 使用"我认识"或"不认识"按钮快速标记单词掌握情况
+5. 使用箭头按钮切换到下一个或上一个单词
 
-## Deploy on Vercel
+### 导入单词
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. 进入导入页面
+2. 选择要导入的语言（英语或日语）
+3. 输入或粘贴单词列表，格式如下：
+   - 英语：`word,中文翻译`（每行一个）
+   - 日语：`假名,汉字,中文翻译`（每行一个）
+4. 点击"导入单词"按钮完成导入
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 管理词汇
+
+1. 进入词汇表页面
+2. 使用搜索框查找特定单词
+3. 使用语言切换按钮过滤不同语言的单词
+4. 使用"只看收藏"开关查看收藏的单词
+5. 使用操作按钮播放发音、收藏或删除单词
+
+### 查看进度
+
+1. 进入进度页面
+2. 查看每日目标完成情况
+3. 查看总体学习统计，包括总学习次数、正确次数和准确率
+4. 阅读系统提供的学习建议
+
+### 调整设置
+
+1. 进入设置页面
+2. 选择默认学习语言
+3. 设置每日学习目标
+4. 调整语音合成速度
+5. 点击"保存设置"按钮应用更改
+
+---
+
+**FreeWord** - 让语言学习更简单、更高效！ 🎓✨
