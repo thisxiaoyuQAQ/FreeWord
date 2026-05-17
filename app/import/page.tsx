@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Word, LanguageTypes, LanguageType } from '../../types';
-import { wordStorage, generateId } from '../../utils/storage';
+import { wordStorage, backupStorage, generateId } from '../../utils/storage';
 import Header from '../components/Header';
 
 const ImportPage = () => {
@@ -10,6 +10,8 @@ const ImportPage = () => {
   const [language, setLanguage] = useState<LanguageType>(LanguageTypes.ENGLISH);
   const [importResult, setImportResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 解析导入文本
   const parseImportText = (text: string, lang: LanguageType): Word[] => {
@@ -110,6 +112,78 @@ const ImportPage = () => {
     setImportText(getSampleText());
   };
 
+  // 处理文件上传
+  const processFile = useCallback((file: File) => {
+    setError(null);
+    setImportResult(null);
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+
+      if (file.name.endsWith('.json')) {
+        try {
+          const success = backupStorage.importData(content);
+          if (success) {
+            const data = JSON.parse(content);
+            const wordCount = data.words?.length || 0;
+            const recordCount = data.records?.length || 0;
+            setImportResult(`成功导入备份数据：${wordCount} 个单词, ${recordCount} 条学习记录`);
+          } else {
+            setError('JSON 数据格式不正确，无法导入');
+          }
+        } catch {
+          setError('JSON 文件解析失败，请检查文件格式');
+        }
+      } else {
+        setImportText(content);
+        setImportResult('文件内容已加载到文本区域，请确认后点击"导入单词"');
+      }
+    };
+
+    reader.onerror = () => {
+      setError('文件读取失败，请重试');
+    };
+
+    reader.readAsText(file);
+  }, []);
+
+  // 处理文件选择
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, [processFile]);
+
+  // 处理拖拽
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  }, [processFile]);
+
   return (
     <div className="main-container">
       <Header />
@@ -139,6 +213,33 @@ const ImportPage = () => {
           <label htmlFor="lang-jp">JP 日语</label>
           
           <div className="marker"></div>
+        </div>
+
+        {/* 文件上传区域 */}
+        <div
+          className={`apple-dropzone mb-6 ${isDragging ? 'dragging' : ''}`}
+          onClick={() => fileInputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <div className="dropzone-icon">📂</div>
+          <p style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
+            拖拽文件到此处上传
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+            支持 .txt 文本文件 或 .json 备份文件
+          </p>
+          <div className="file-input-label">
+            选择文件
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt,.json"
+            onChange={handleFileSelect}
+            style={{ display: 'none' }}
+          />
         </div>
 
         {/* 状态提示 */}
