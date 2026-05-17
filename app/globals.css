@@ -1666,7 +1666,7 @@ body {
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-primary);
-    transition: all 0.2s ease;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
     cursor: pointer;
 }
 
@@ -1682,19 +1682,20 @@ body {
     top: 100%;
     margin-top: 8px;
     width: 200px; /* 强制宽度，防止文字竖排 */
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border: 1px solid rgba(0,0,0,0.1);
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
     border-radius: 14px;
-    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);
     padding: 6px;
     z-index: 1000;
-    transform-origin: top right;
-    animation: menuPop 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
     display: flex;
     flex-direction: column;
     gap: 2px;
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    animation: menuPop 0.18s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
 /* 菜单项 */
@@ -1710,7 +1711,7 @@ body {
     font-size: 0.95rem;
     color: var(--text-primary);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background-color 0.15s ease;
     text-align: left;
     white-space: nowrap; /* 防止文字换行 */
 }
@@ -1749,11 +1750,11 @@ body {
 @keyframes menuPop {
     from {
         opacity: 0;
-        transform: scale(0.95) translateY(-6px);
+        transform: translateY(-4px);
     }
     to {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: translateY(0);
     }
 }
 

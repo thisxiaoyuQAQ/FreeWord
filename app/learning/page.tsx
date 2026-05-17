@@ -10,12 +10,11 @@ const LearningPage = () => {
   const [words, setWords] = useState<Word[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
+  const [hasAnyWords, setHasAnyWords] = useState(false);
   const [settings, setSettings] = useState(() => {
-    // 确保只在客户端访问localStorage
     if (typeof window !== 'undefined') {
       return settingsStorage.getSettings();
     }
-    // 服务端默认值
     return {
       language: LanguageTypes.ENGLISH,
       dailyGoal: 20,
@@ -30,14 +29,26 @@ const LearningPage = () => {
   const [feedback, setFeedback] = useState('');
   const [userInput, setUserInput] = useState('');
 
-  // 加载单词和设置
   useEffect(() => {
     const loadData = () => {
       const allWords = wordStorage.getAllWords();
-      const filteredWords = allWords.filter(word => word.language === settings.language);
+      setHasAnyWords(allWords.length > 0);
+
+      let filteredWords = allWords.filter(word => word.language === settings.language);
+
+      if (filteredWords.length === 0 && allWords.length > 0) {
+        const fallbackLang = allWords[0].language;
+        filteredWords = allWords.filter(word => word.language === fallbackLang);
+        if (fallbackLang !== settings.language) {
+          const newSettings = { ...settings, language: fallbackLang };
+          setSettings(newSettings);
+          settingsStorage.saveSettings(newSettings);
+        }
+      }
+
       setWords(filteredWords);
-      
-      // 获取今日学习记录数量
+      setCurrentWordIndex(0);
+
       const todayRecords = recordStorage.getTodayRecords();
       setTodayCount(todayRecords.length);
     };
@@ -183,7 +194,28 @@ const LearningPage = () => {
         <Header />
         <div className="content-card">
           <div className="text-center py-12 text-gray-500">
-            没有找到单词，请先导入或添加单词
+            {hasAnyWords ? (
+              <>
+                <p className="text-lg font-medium mb-2">当前语言暂无单词</p>
+                <p className="mb-4">请尝试切换上方语言选项卡</p>
+                <div className="language-toggle" style={{ display: 'inline-flex' }}>
+                  <button
+                    className={`toggle-btn ${settings.language === LanguageTypes.ENGLISH ? 'active' : ''}`}
+                    onClick={() => handleLanguageChange(LanguageTypes.ENGLISH)}
+                  >
+                    GB 英语
+                  </button>
+                  <button
+                    className={`toggle-btn ${settings.language === LanguageTypes.JAPANESE ? 'active' : ''}`}
+                    onClick={() => handleLanguageChange(LanguageTypes.JAPANESE)}
+                  >
+                    JP 日语
+                  </button>
+                </div>
+              </>
+            ) : (
+              '没有找到单词，请先导入或添加单词'
+            )}
           </div>
         </div>
       </div>
