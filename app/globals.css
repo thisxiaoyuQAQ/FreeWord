@@ -654,6 +654,29 @@ body {
     font-weight: 600;
 }
 
+/* 三段式分段控制器 (词汇表 全部/英语/日语) */
+.segmented-control.three-seg .marker {
+    width: calc(33.33% - 4px);
+}
+
+.segmented-control.three-seg #tab-all:checked ~ .marker {
+    transform: translateX(0);
+}
+
+.segmented-control.three-seg #tab-en:checked ~ .marker {
+    transform: translateX(calc(100% + 2px));
+}
+
+.segmented-control.three-seg #tab-jp:checked ~ .marker {
+    transform: translateX(calc(200% + 4px));
+}
+
+.segmented-control.three-seg #tab-all:checked + label,
+.segmented-control.three-seg #tab-en:checked + label,
+.segmented-control.three-seg #tab-jp:checked + label {
+    font-weight: 600;
+}
+
 /* 学习模式分段控制器 */
 .segmented-control.small {
     display: flex;

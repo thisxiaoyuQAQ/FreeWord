@@ -127,7 +127,7 @@ const VocabularyPage = () => {
         </div>
 
         {/* 语言切换 */}
-        <div className="segmented-control mt-4">
+        <div className="segmented-control three-seg mt-4">
           <input 
             type="radio" 
             name="vocab-type" 
@@ -135,7 +135,7 @@ const VocabularyPage = () => {
             checked={filterLanguage === 'all'} 
             onChange={() => setFilterLanguage('all')}
           />
-          <label htmlFor="tab-all">全部 ({filteredWords.length})</label>
+          <label htmlFor="tab-all">全部 ({words.length})</label>
           
           <input 
             type="radio" 
