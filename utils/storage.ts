@@ -9,7 +9,7 @@ import {
 
 // 生成唯一ID
 export const generateId = (): string => {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  return crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substring(2, 10);
 };
 
 // 处理日期序列化和反序列化
@@ -230,20 +230,24 @@ export const backupStorage = {
   importData: (jsonData: string): boolean => {
     try {
       const data = JSON.parse(jsonData);
-      
-      // 验证数据格式
-      if (!data.words || !data.records || !data.settings) {
-        throw new Error('Invalid data format');
+
+      if (!Array.isArray(data.words) || !Array.isArray(data.records) || !data.settings) {
+        return false;
       }
-      
-      // 保存数据
+
+      if (data.words.length > 0) {
+        const sample = data.words[0];
+        if (!sample.id || !sample.language || !sample.data) {
+          return false;
+        }
+      }
+
       safeLocalStorage.setItem(STORAGE_KEYS.WORDS, JSON.stringify(data.words.map(serializeDate)));
       safeLocalStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(data.records.map(serializeDate)));
       safeLocalStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(serializeDate(data.settings)));
-      
+
       return true;
     } catch (error) {
-      console.error('Failed to import data:', error);
       return false;
     }
   }

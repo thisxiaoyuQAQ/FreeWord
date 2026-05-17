@@ -66,8 +66,7 @@ const ImportPage = () => {
           }
         }
       } catch (err) {
-        console.error(`Error parsing line ${i + 1}: ${line}`, err);
-        throw new Error(`第 ${i + 1} 行格式错误: ${line}`);
+        throw new Error(`第 ${i + 1} 行格式错误`);
       }
     }
 
@@ -124,14 +123,23 @@ const ImportPage = () => {
 
       if (file.name.endsWith('.json')) {
         try {
+          const data = JSON.parse(content);
+          if (!data.words || !data.records || !data.settings) {
+            setError('JSON 数据格式不正确：缺少 words、records 或 settings 字段');
+            return;
+          }
+          const wordCount = data.words.length || 0;
+          const recordCount = data.records.length || 0;
+          const confirmed = window.confirm(
+            `即将导入备份数据：\n• ${wordCount} 个单词\n• ${recordCount} 条学习记录\n\n此操作将覆盖当前所有数据，确定继续？`
+          );
+          if (!confirmed) return;
+
           const success = backupStorage.importData(content);
           if (success) {
-            const data = JSON.parse(content);
-            const wordCount = data.words?.length || 0;
-            const recordCount = data.records?.length || 0;
             setImportResult(`成功导入备份数据：${wordCount} 个单词, ${recordCount} 条学习记录`);
           } else {
-            setError('JSON 数据格式不正确，无法导入');
+            setError('数据导入失败，请检查文件内容');
           }
         } catch {
           setError('JSON 文件解析失败，请检查文件格式');
